@@ -134,17 +134,22 @@ func (sc *scenario) benchJobReconcile(ctx context.Context, jobList map[string]v1
 }
 
 func (sc *scenario) benchScenarioReconcile(ctx context.Context, scenarioList map[string]v1.ValdBenchmarkScenarioSpec) {
-	log.Infof("[reconcile scenario] Start scenario reconcile: %#v", scenarioList)
-	scenario, ok := scenarioList[sc.jobName]
-	if !ok {
-		sc.scenarios.Store(make([]v1.ValdBenchmarkScenarioSpec, 0))
+	log.Debug("[reconcile scenario]: ", scenarioList)
+	if len(scenarioList) == 0 {
+		if ok := sc.scenarios.Load(); ok == nil {
+			sc.scenarios.Store(make([]v1.ValdBenchmarkScenarioSpec, 0))
+		}
 		log.Infof("[reconcile scenario] scenario not found")
+		return
 	}
-	sc.scenarios.Store(scenario)
+	for _, scenario := range scenarioList {
+		log.Debug(scenario)
+		sc.scenarios.Store(scenario)
+	}
 }
 
 func (sc *scenario) PreStart(ctx context.Context) error {
-	log.Infof("[benchmark scenario] start vald benchmark scenario")
+	log.Infof("[benchmark operator] start vald benchmark operator")
 	return nil
 }
 
@@ -164,6 +169,12 @@ func (sc *scenario) Start(ctx context.Context) (<-chan error, error) {
 				return nil
 			case <-dt.C:
 				// TODO: Get Resource
+				bs, ok := sc.scenarios.Load().(v1.ValdBenchmarkScenarioSpec)
+				if !ok {
+					log.Info("benchmark scenario resource is empty")
+					continue
+				}
+				log.Debugf("[benchmark resource]", bs)
 			case err = <-scch:
 				if err != nil {
 					ech <- err

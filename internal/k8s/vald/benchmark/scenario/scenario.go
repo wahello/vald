@@ -18,7 +18,6 @@ package scenario
 
 import (
 	"context"
-	"strconv"
 	"time"
 
 	"github.com/vdaas/vald/internal/k8s"
@@ -81,7 +80,7 @@ func (r *reconciler) Reconcile(ctx context.Context, req reconcile.Request) (res 
 			RequeueAfter: time.Millisecond * 100,
 		}
 		if errors.IsNotFound(err) {
-			log.Errorf("not found: %s", err)
+			log.Errorf("[internal benchmark scenario reconciler] not found: %s", err)
 			return reconcile.Result{
 				Requeue:      true,
 				RequeueAfter: time.Second,
@@ -89,17 +88,22 @@ func (r *reconciler) Reconcile(ctx context.Context, req reconcile.Request) (res 
 		}
 		return
 	}
+	log.Debugf("internal/k8s/scenario scenario list: %#v", bs)
 
 	scenarios := make(map[string]v1.ValdBenchmarkScenarioSpec, 0)
+	log.Debug(bs.Items)
 	for _, item := range bs.Items {
-		name := strconv.FormatInt(time.Now().UnixNano(), 10)
-		scenarios[name] = item.Spec
+		name := item.Name
+		sc := new(v1.ValdBenchmarkScenario)
+		item.DeepCopyInto(sc)
+		scenarios[name] = sc.Spec
 	}
+	log.Debugf("xxxxxxxxxx: ", scenarios)
+	log.Debugf("internal/k8s/scenario scenario: ", scenarios)
 
 	if r.onReconcile != nil {
 		r.onReconcile(ctx, scenarios)
 	}
-
 	return
 }
 
@@ -127,6 +131,6 @@ func (r *reconciler) Owns() (client.Object, []builder.OwnsOption) {
 }
 
 func (r *reconciler) Watches() (*source.Kind, handler.EventHandler, []builder.WatchesOption) {
-	// return &source.Kind{Type: new(corev1.Pod)}, &handler.EnqueueRequestForObject{}
-	return &source.Kind{Type: new(v1.ValdBenchmarkScenario)}, &handler.EnqueueRequestForObject{}, nil
+	// return &source.Kind{Type: new(v1.ValdBenchmarkScenario)}, &handler.EnqueueRequestForObject{}, nil
+	return nil, nil, nil
 }

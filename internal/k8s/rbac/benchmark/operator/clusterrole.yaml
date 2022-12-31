@@ -33,9 +33,23 @@ rules:
       - update
       - watch
   - apiGroups:
+      - batch
+    resources:
+      - jobs
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
       - vald.vdaas.org
     resources:
       - valdbenchmarkscenario
+      - valdbenchmarkscenario
+      - valdbenchmarkjobs
     verbs:
       - create
       - delete
@@ -48,12 +62,14 @@ rules:
       - vald.vdaas.org
     resources:
       - valdbenchmarkscenario/finalizers
+      - valdbenchmarkjobs/finalizers
     verbs:
       - update
   - apiGroups:
       - vald.vdaas.org
     resources:
       - valdbenchmarkscenario/status
+      - valdbenchmarkjobs/status
     verbs:
       - get
       - patch
