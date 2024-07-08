@@ -17,8 +17,6 @@
 // Package faiss provides implementation of Go API for https://github.com/facebookresearch/faiss
 package faiss
 
-import "C"
-
 import (
 	"strings"
 

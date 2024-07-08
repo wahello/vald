@@ -454,6 +454,7 @@ format: \
 .PHONY: format/go
 ## run golines, gofumpt, goimports for all go files
 format/go: \
+	crlfmt/install \
 	golines/install \
 	gofumpt/install \
 	strictgoimports/install \
@@ -462,10 +463,12 @@ format/go: \
 	find $(ROOTDIR)/ -type d -name .git -prune -o -type f -regex '.*[^\.pb]\.go' -print | xargs -P$(CORES) $(GOBIN)/gofumpt -w
 	find $(ROOTDIR)/ -type d -name .git -prune -o -type f -regex '.*[^\.pb]\.go' -print | xargs -P$(CORES) $(GOBIN)/strictgoimports -w
 	find $(ROOTDIR)/ -type d -name .git -prune -o -type f -regex '.*\.go' -print | xargs -P$(CORES) $(GOBIN)/goimports -w
+	find $(ROOTDIR)/ -type d -name .git -prune -o -type f -regex '.*\.go' -print | xargs -P$(CORES) $(GOBIN)/crlfmt -w
 
 .PHONY: format/go/test
 ## run golines, gofumpt, goimports for go test files
 format/go/test: \
+	crlfmt/install \
 	golines/install \
 	gofumpt/install \
 	strictgoimports/install \
@@ -474,6 +477,7 @@ format/go/test: \
 	find $(ROOTDIR) -name '*_test.go' | xargs -P$(CORES) $(GOBIN)/gofumpt -w
 	find $(ROOTDIR) -name '*_test.go' | xargs -P$(CORES) $(GOBIN)/strictgoimports -w
 	find $(ROOTDIR) -name '*_test.go' | xargs -P$(CORES) $(GOBIN)/goimports -w
+	find $(ROOTDIR) -name '*_test.go' | xargs -P$(CORES) $(GOBIN)/crlfmt -w
 
 .PHONY: format/yaml
 format/yaml: \
@@ -516,6 +520,7 @@ deps: \
 .PHONY: deps/install
 ## install dependencies
 deps/install: \
+	crlfmt/install \
 	golines/install \
 	gofumpt/install \
 	strictgoimports/install \
@@ -607,7 +612,11 @@ faiss/install: /usr/local/lib/libfaiss.so
 lint: \
 	docs/lint \
 	files/lint \
-	vet
+	vet \
+	go/lint
+
+.PHONY: go/lint
+go/lint:
 	$(call go-lint)
 
 .PHONY: vet

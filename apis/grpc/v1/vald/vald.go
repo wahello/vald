@@ -17,9 +17,7 @@
 // Package vald provides vald server interface
 package vald
 
-import (
-	grpc "google.golang.org/grpc"
-)
+import grpc "google.golang.org/grpc"
 
 type Server interface {
 	InsertServer
@@ -69,14 +67,15 @@ type ClientWithFilter interface {
 const PackageName = "vald.v1"
 
 const (
+	FilterRPCServiceName = "Filter"
+	FlushRPCServiceName  = "Flush"
+	IndexRPCServiceName  = "Index"
 	InsertRPCServiceName = "Insert"
+	ObjectRPCServiceName = "Object"
+	RemoveRPCServiceName = "Remove"
+	SearchRPCServiceName = "Search"
 	UpdateRPCServiceName = "Update"
 	UpsertRPCServiceName = "Upsert"
-	SearchRPCServiceName = "Search"
-	RemoveRPCServiceName = "Remove"
-	FlushRPCServiceName  = "Flush"
-	ObjectRPCServiceName = "Object"
-	FilterRPCServiceName = "Filter"
 )
 
 const (
@@ -132,6 +131,9 @@ const (
 	GetTimestampRPCName     = "GetTimestamp"
 	StreamGetObjectRPCName  = "StreamGetObject"
 	StreamListObjectRPCName = "StreamListObject"
+
+	IndexInfoRPCName   = "IndexInfo"
+	IndexDetailRPCName = "IndexDetail"
 )
 
 type client struct {
@@ -142,6 +144,7 @@ type client struct {
 	RemoveClient
 	FlushClient
 	ObjectClient
+	IndexClient
 }
 
 func RegisterValdServer(s *grpc.Server, srv Server) {
@@ -152,6 +155,7 @@ func RegisterValdServer(s *grpc.Server, srv Server) {
 	RegisterRemoveServer(s, srv)
 	RegisterFlushServer(s, srv)
 	RegisterObjectServer(s, srv)
+	RegisterIndexServer(s, srv)
 }
 
 func RegisterValdServerWithFilter(s *grpc.Server, srv ServerWithFilter) {
@@ -168,5 +172,6 @@ func NewValdClient(conn *grpc.ClientConn) Client {
 		NewRemoveClient(conn),
 		NewFlushClient(conn),
 		NewObjectClient(conn),
+		NewIndexClient(conn),
 	}
 }

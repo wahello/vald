@@ -94,9 +94,7 @@ func NewAgentClient(cc *grpc.ClientConn) Client {
 }
 
 func (c *agentClient) CreateIndex(
-	ctx context.Context,
-	req *client.ControlCreateIndexRequest,
-	_ ...grpc.CallOption,
+	ctx context.Context, req *client.ControlCreateIndexRequest, _ ...grpc.CallOption,
 ) (*client.Empty, error) {
 	ctx, span := trace.StartSpan(grpc.WrapGRPCMethod(ctx, "internal/client/"+agent.CreateIndexRPCName), apiName+"/"+agent.CreateIndexRPCName)
 	defer func() {
@@ -106,16 +104,14 @@ func (c *agentClient) CreateIndex(
 	}()
 	_, err := c.c.RoundRobin(ctx, func(ctx context.Context,
 		conn *grpc.ClientConn, copts ...grpc.CallOption,
-	) (interface{}, error) {
+	) (any, error) {
 		return agent.NewAgentClient(conn).CreateIndex(ctx, req, copts...)
 	})
 	return nil, err
 }
 
 func (c *agentClient) SaveIndex(
-	ctx context.Context,
-	_ *client.Empty,
-	_ ...grpc.CallOption,
+	ctx context.Context, _ *client.Empty, _ ...grpc.CallOption,
 ) (*client.Empty, error) {
 	ctx, span := trace.StartSpan(grpc.WrapGRPCMethod(ctx, "internal/client/"+agent.SaveIndexRPCName), apiName+"/"+agent.SaveIndexRPCName)
 	defer func() {
@@ -125,16 +121,14 @@ func (c *agentClient) SaveIndex(
 	}()
 	_, err := c.c.RoundRobin(ctx, func(ctx context.Context,
 		conn *grpc.ClientConn, copts ...grpc.CallOption,
-	) (interface{}, error) {
+	) (any, error) {
 		return agent.NewAgentClient(conn).SaveIndex(ctx, new(client.Empty), copts...)
 	})
 	return nil, err
 }
 
 func (c *agentClient) CreateAndSaveIndex(
-	ctx context.Context,
-	req *client.ControlCreateIndexRequest,
-	_ ...grpc.CallOption,
+	ctx context.Context, req *client.ControlCreateIndexRequest, _ ...grpc.CallOption,
 ) (*client.Empty, error) {
 	ctx, span := trace.StartSpan(grpc.WrapGRPCMethod(ctx, "internal/client/"+agent.CreateAndSaveIndexRPCName), apiName+"/"+agent.CreateAndSaveIndexRPCName)
 	defer func() {
@@ -144,16 +138,14 @@ func (c *agentClient) CreateAndSaveIndex(
 	}()
 	_, err := c.c.RoundRobin(ctx, func(ctx context.Context,
 		conn *grpc.ClientConn, copts ...grpc.CallOption,
-	) (interface{}, error) {
+	) (any, error) {
 		return agent.NewAgentClient(conn).CreateAndSaveIndex(ctx, req, copts...)
 	})
 	return nil, err
 }
 
 func (c *agentClient) IndexInfo(
-	ctx context.Context,
-	_ *client.Empty,
-	_ ...grpc.CallOption,
+	ctx context.Context, _ *client.Empty, _ ...grpc.CallOption,
 ) (res *client.InfoIndexCount, err error) {
 	ctx, span := trace.StartSpan(grpc.WrapGRPCMethod(ctx, "internal/client/"+agent.IndexInfoRPCName), apiName+"/"+agent.IndexInfoRPCName)
 	defer func() {
@@ -163,7 +155,7 @@ func (c *agentClient) IndexInfo(
 	}()
 	_, err = c.c.RoundRobin(ctx, func(ctx context.Context,
 		conn *grpc.ClientConn, copts ...grpc.CallOption,
-	) (interface{}, error) {
+	) (any, error) {
 		res, err := agent.NewAgentClient(conn).IndexInfo(ctx, new(client.Empty), copts...)
 		if err != nil {
 			return nil, err
@@ -177,9 +169,7 @@ func (c *agentClient) IndexInfo(
 }
 
 func (c *agentClient) GetTimestamp(
-	ctx context.Context,
-	req *client.ObjectGetTimestampRequest,
-	_ ...grpc.CallOption,
+	ctx context.Context, req *client.ObjectGetTimestampRequest, _ ...grpc.CallOption,
 ) (res *client.ObjectTimestamp, err error) {
 	ctx, span := trace.StartSpan(grpc.WrapGRPCMethod(ctx, "internal/client/"+agent.GetTimestampRPCName), apiName+"/"+agent.GetTimestampRPCName)
 	defer func() {
@@ -189,7 +179,7 @@ func (c *agentClient) GetTimestamp(
 	}()
 	_, err = c.c.RoundRobin(ctx, func(ctx context.Context,
 		conn *grpc.ClientConn, copts ...grpc.CallOption,
-	) (interface{}, error) {
+	) (any, error) {
 		res, err := agent.NewAgentClient(conn).GetTimestamp(ctx, req, copts...)
 		if err != nil {
 			return nil, err
@@ -203,9 +193,7 @@ func (c *agentClient) GetTimestamp(
 }
 
 func (c *singleAgentClient) CreateIndex(
-	ctx context.Context,
-	req *client.ControlCreateIndexRequest,
-	opts ...grpc.CallOption,
+	ctx context.Context, req *client.ControlCreateIndexRequest, opts ...grpc.CallOption,
 ) (*client.Empty, error) {
 	ctx, span := trace.StartSpan(grpc.WrapGRPCMethod(ctx, "internal/singleClient/"+agent.CreateIndexRPCName), apiName+"/"+agent.CreateIndexRPCName)
 	defer func() {
@@ -217,9 +205,7 @@ func (c *singleAgentClient) CreateIndex(
 }
 
 func (c *singleAgentClient) SaveIndex(
-	ctx context.Context,
-	_ *client.Empty,
-	opts ...grpc.CallOption,
+	ctx context.Context, _ *client.Empty, opts ...grpc.CallOption,
 ) (*client.Empty, error) {
 	ctx, span := trace.StartSpan(grpc.WrapGRPCMethod(ctx, "internal/singleClient/"+agent.SaveIndexRPCName), apiName+"/"+agent.SaveIndexRPCName)
 	defer func() {
@@ -231,9 +217,7 @@ func (c *singleAgentClient) SaveIndex(
 }
 
 func (c *singleAgentClient) CreateAndSaveIndex(
-	ctx context.Context,
-	req *client.ControlCreateIndexRequest,
-	opts ...grpc.CallOption,
+	ctx context.Context, req *client.ControlCreateIndexRequest, opts ...grpc.CallOption,
 ) (*client.Empty, error) {
 	ctx, span := trace.StartSpan(grpc.WrapGRPCMethod(ctx, "internal/singleClient/"+agent.CreateAndSaveIndexRPCName), apiName+"/"+agent.CreateAndSaveIndexRPCName)
 	defer func() {
@@ -245,9 +229,7 @@ func (c *singleAgentClient) CreateAndSaveIndex(
 }
 
 func (c *singleAgentClient) IndexInfo(
-	ctx context.Context,
-	_ *client.Empty,
-	opts ...grpc.CallOption,
+	ctx context.Context, _ *client.Empty, opts ...grpc.CallOption,
 ) (res *client.InfoIndexCount, err error) {
 	ctx, span := trace.StartSpan(grpc.WrapGRPCMethod(ctx, "internal/singleClient/"+agent.IndexInfoRPCName), apiName+"/"+agent.IndexInfoRPCName)
 	defer func() {
@@ -259,9 +241,7 @@ func (c *singleAgentClient) IndexInfo(
 }
 
 func (c *singleAgentClient) GetTimestamp(
-	ctx context.Context,
-	req *client.ObjectGetTimestampRequest,
-	opts ...grpc.CallOption,
+	ctx context.Context, req *client.ObjectGetTimestampRequest, opts ...grpc.CallOption,
 ) (res *client.ObjectTimestamp, err error) {
 	ctx, span := trace.StartSpan(grpc.WrapGRPCMethod(ctx, "internal/singleClient/"+agent.GetTimestampRPCName), apiName+"/"+agent.GetTimestampRPCName)
 	defer func() {
